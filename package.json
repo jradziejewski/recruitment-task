@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "concurrently --names \"docker,client,server\" \"pnpm run dev:docker\" \"pnpm run -C client dev\" \"pnpm run -C server dev\"",
+    "dev:docker": "docker-compose up",
+    "prepare": "husky",
+    "preinstall": "npx only-allow pnpm"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=7"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "husky": "^9.1.7"
+  }
+}
