@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
-import { Submission } from "../models/Submission";
-import { submissionConfirmationEmailJob } from "../jobs/SubmissionConfirmationEmail";
+import { Submission } from "../../models/Submission";
+import { submissionConfirmationEmailJob } from "../../jobs/SubmissionConfirmationEmail";
 import { Type } from "@sinclair/typebox";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 

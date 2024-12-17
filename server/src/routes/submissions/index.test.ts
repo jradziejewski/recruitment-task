@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { createApp } from "../app";
+import { createApp } from "../../app";
 import { FastifyInstance } from "fastify";
 
 describe("POST `/submissions` route", () => {
