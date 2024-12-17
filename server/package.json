@@ -2,7 +2,7 @@
   "name": "server",
   "scripts": {
     "dev:db": "mikro-orm schema:update -r",
-    "dev": "tsx src/main.ts",
+    "dev": "tsx --watch src/main.ts",
     "test": "vitest",
     "lint": "eslint && prettier . --check"
   },
