@@ -6,7 +6,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint && prettier . --check"
+    "lint": "eslint && prettier . --check",
+    "test": "echo 'No tests' && exit 0"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.3",
