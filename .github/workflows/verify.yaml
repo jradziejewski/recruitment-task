@@ -1,0 +1,75 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Verify
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, edited, reopened]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        component: [client, server]
+        task: [lint, build, test]
+    continue-on-error: true
+
+    defaults:
+      run:
+        working-directory: ./${{ matrix.component }}
+
+    services:
+      redis:
+        image: ${{ (matrix.component == 'server' && matrix.task == 'test') && 'redis' || '' }}
+        ports:
+          - "6379:6379"
+
+      postgresql:
+        image: ${{ (matrix.component == 'server' && matrix.task == 'test') && 'postgres' || '' }}
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: secret123
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mail:
+        image: ${{ (matrix.component == 'server' && matrix.task == 'test') && 'maildev/maildev' || '' }}
+        ports:
+          - "1080:1080"
+          - "1025:1025"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Schema
+        if: ${{ matrix.component == 'server' && matrix.task == 'test' }}
+        run: ./node_modules/.bin/mikro-orm schema:fresh -r
+
+      - name: Run task
+        run: pnpm run ${{ matrix.task }}
