@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "concurrently --names \"docker,client,server\" \"pnpm run dev:docker\" \"pnpm run -C client dev\" \"pnpm run -C server dev\"",
-    "dev:docker": "docker-compose up",
+    "dev:docker": "docker compose up",
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm"
   },

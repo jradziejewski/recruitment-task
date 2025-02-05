@@ -15,7 +15,7 @@ Create a simple frontend with a submission form and a backend that handles form 
 2. Set up the database schema
 
    ```
-   $ docker-compose up -d postgresql; pnpm run -C server dev:db; docker-compose stop postgresql
+   $ docker compose up -d postgresql; pnpm run -C server dev:db; docker compose stop postgresql
    ```
 
 3. Start
@@ -29,7 +29,7 @@ Create a simple frontend with a submission form and a backend that handles form 
 You will need to update the database schema whenever you change the models:
 
 ```
-$ docker-compose up -d postgresql; pnpm run -C server dev:db; docker-compose stop postgresql
+$ docker compose up -d postgresql; pnpm run -C server dev:db; docker compose stop postgresql
 ```
 
 ## Handing over
