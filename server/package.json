@@ -3,7 +3,7 @@
   "scripts": {
     "dev:db": "mikro-orm schema:update -r",
     "dev": "tsx --watch src/main.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "build": "tsc",
     "lint": "eslint && prettier . --check"
   },
