@@ -27,5 +27,5 @@ const plugin: FastifyPluginAsync<never> = async (fastify) => {
 };
 
 export default fp(plugin, {
-  name: "orm",
+  name: "mail",
 });
