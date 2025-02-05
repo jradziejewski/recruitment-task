@@ -2,7 +2,7 @@
 
 This recruitment repository was created with two main goals: to show you what to expect when working with us (as the stack reflects some parts of our actual codebase), and to help us understand how you approach tasks where not everything is known from the start.
 
-Create a simple frontend with a submission form and a backend that handles form submissions, stores them in a database, and sends confirmation emails to submitters. Focus on implementing the components you consider most important. While you'll find "TODO" comments throughout the code, feel free to implement whatever best showcases your skills.
+Create a simple frontend with a submission form and a backend that handles form submissions, stores them in a database, and sends confirmation emails to submitters. Focus on implementing the components you consider most important. While you'll find some "TODO" comments throughout the code, feel free to implement whatever best showcases your skills. You can use any JS framework on the frontend.
 
 ## Gettings started
 
