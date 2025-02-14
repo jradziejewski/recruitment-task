@@ -5,6 +5,7 @@ import eslintPluginAstro from "eslint-plugin-astro";
 
 export default [
   { files: ["src/**/*.{js,ts,astro}"] },
+  { ignores: [".astro"] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,

@@ -15,7 +15,7 @@ export interface QueueJobInterface<T extends TSchema> {
 }
 
 type QueueManager = {
-  register(job: QueueJobInterface<any>): void;
+  register<T extends TSchema>(job: QueueJobInterface<T>): void;
   schedule<T extends TSchema>(
     job: QueueJobInterface<T>,
     args: Static<T>,
@@ -66,7 +66,7 @@ export default fp<{
   connection: string;
 }>(
   async (fastify, opts) => {
-    const queues: Map<QueueJobInterface<any>, [Queue, Worker]> = new Map();
+    const queues: Map<QueueJobInterface<TSchema>, [Queue, Worker]> = new Map();
 
     const connection = new IORedis(opts.connection, {
       maxRetriesPerRequest: null,
@@ -129,6 +129,7 @@ export default fp<{
 
     fastify.addHook("onReady", async () => {
       await Promise.all(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [...queues.values()].map(async ([_, worker]) => {
           void worker.run();
           await worker.waitUntilReady();

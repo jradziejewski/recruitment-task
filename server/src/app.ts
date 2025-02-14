@@ -4,7 +4,9 @@ import path from "node:path";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
 export function createApp() {
-  const app = fastify().withTypeProvider<TypeBoxTypeProvider>();
+  const app = fastify({
+    logger: { transport: { target: "pino-pretty" } },
+  }).withTypeProvider<TypeBoxTypeProvider>();
 
   // Plugins
   app.register(autoload, {
