@@ -8,6 +8,7 @@
     "lint": "eslint && prettier . --check"
   },
   "dependencies": {
+    "@eslint/js": "^9.20.0",
     "@fastify/autoload": "^6.0.2",
     "@fastify/type-provider-typebox": "^5.1.0",
     "@mikro-orm/core": "^6.4.1",
@@ -24,7 +25,6 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
     "@mikro-orm/cli": "^6.4.1",
     "@types/node": "^22.10.2",
     "@types/nodemailer": "^6.4.17",

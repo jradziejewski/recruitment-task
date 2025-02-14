@@ -1,2 +1,2 @@
-#pnpm run -r lint
-#pnpm run -r test
+pnpm run -r lint
+pnpm run -r test
