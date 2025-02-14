@@ -30,6 +30,8 @@ const plugin: FastifyPluginAsync = async (fastify) => {
           async afterTransactionCommit() {
             await fastify.queue.schedule(submissionConfirmationEmailJob, {
               id: submission.id,
+              firstName: submission.firstName,
+              recipientEmail: submission.email,
             });
           },
         });

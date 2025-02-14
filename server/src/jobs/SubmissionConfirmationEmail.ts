@@ -6,9 +6,15 @@ export const submissionConfirmationEmailJob = defineJob(
   "SubmissionConfirmationEmail",
   Type.Object({
     id: Type.String({ format: "uuid" }),
+    firstName: Type.String(),
+    recipientEmail: Type.String(),
   }),
-  async ({ id }) => {
-    // TODO: Should send an email
+  async ({ id, firstName, recipientEmail }, fastify) => {
+    await fastify.mail.send("submission-confirmation", {
+      id,
+      recipientEmail,
+      firstName,
+    });
   },
 );
 

@@ -1,8 +1,9 @@
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { createApp } from "../../../app";
 import { FastifyInstance } from "fastify";
 import { Submission } from "../../../models/Submission";
 import { EntityManager } from "@mikro-orm/postgresql";
+import { submissionConfirmationEmailJob } from "../../../jobs/SubmissionConfirmationEmail";
 
 describe("POST `/api/submissions` route", () => {
   let app: FastifyInstance | undefined;
@@ -85,5 +86,55 @@ describe("POST `/api/submissions` route", () => {
     expect(submission?.phoneNumber).toBe(payload.phoneNumber);
     expect(submission?.email).toBe(payload.email);
     expect(submission?.message).toBe(payload.message);
+  });
+
+  test("POST `/api/submissions` schedules sending email confirmation job", async () => {
+    if (!app) {
+      throw new Error("App is not initialized");
+    }
+
+    const queueSpy = vi
+      .spyOn(app.queue, "schedule")
+      .mockResolvedValue(undefined);
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/submissions",
+      payload,
+    });
+
+    expect(response.statusCode).toBe(201);
+
+    const submission = await em.findOne(Submission, {
+      email: payload.email,
+    });
+
+    expect(queueSpy).toHaveBeenCalledWith(submissionConfirmationEmailJob, {
+      id: submission?.id,
+      firstName: submission?.firstName,
+      recipientEmail: submission?.email,
+    });
+  });
+
+  test("POST `/api/submissions` handles job scheduling failure", async () => {
+    if (!app) {
+      throw new Error("App is not initialized");
+    }
+
+    vi.spyOn(app.queue, "schedule").mockRejectedValue(
+      new Error("Failed to schedule email job"),
+    );
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/submissions",
+      payload,
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.json()).toHaveProperty(
+      "message",
+      "Failed to schedule email job",
+    );
   });
 });
