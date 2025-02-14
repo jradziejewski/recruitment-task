@@ -46,8 +46,17 @@ describe("POST `/api/submissions` route", () => {
       url: "/api/submissions",
       payload,
     });
+    expect(response.statusCode).toBe(201);
 
-    expect(response?.statusCode).toBe(201);
+    expect(response.json().message).toContain("New submission created");
+    expect(response.json().submission.firstName).toContain(payload.firstName);
+    expect(response.json().submission.lastName).toContain(payload.lastName);
+    expect(response.json().submission.company).toContain(payload.company);
+    expect(response.json().submission.phoneNumber).toContain(
+      payload.phoneNumber,
+    );
+    expect(response.json().submission.email).toContain(payload.email);
+    expect(response.json().submission.message).toContain(payload.message);
   });
 
   test("should return error response with bad data", async () => {
@@ -55,12 +64,18 @@ describe("POST `/api/submissions` route", () => {
       method: "POST",
       url: "/api/submissions",
       payload: {
-        bad: "data",
+        ...payload,
+        company: "",
       },
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.json().message).toContain("must have required property");
+    expect(response.json()).toStrictEqual({
+      statusCode: 400,
+      code: "FST_ERR_VALIDATION",
+      error: "Bad Request",
+      message: "body/company must NOT have fewer than 1 characters",
+    });
   });
 
   test("should save to database", async () => {
