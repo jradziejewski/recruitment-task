@@ -22,20 +22,26 @@ const plugin: FastifyPluginAsync = async (fastify) => {
     async (request, response) => {
       let submission!: Submission;
 
-      await fastify.orm.em.transactional(async (em) => {
-        submission = em.create(Submission, request.body);
-        await em.persistAndFlush(submission);
+      try {
+        await fastify.orm.em.transactional(async (em) => {
+          submission = em.create(Submission, request.body);
+          await em.persistAndFlush(submission);
 
-        em.getEventManager().registerSubscriber({
-          async afterTransactionCommit() {
-            await fastify.queue.schedule(submissionConfirmationEmailJob, {
-              id: submission.id,
-              firstName: submission.firstName,
-              recipientEmail: submission.email,
-            });
-          },
+          em.getEventManager().registerSubscriber({
+            async afterTransactionCommit() {
+              await fastify.queue.schedule(submissionConfirmationEmailJob, {
+                id: submission.id,
+                firstName: submission.firstName,
+                recipientEmail: submission.email,
+              });
+            },
+          });
         });
-      });
+      } catch (error) {
+        fastify.log.error(error);
+        response.status(500).send({ message: "Internal Server Error" });
+        return;
+      }
 
       response.status(201).send({
         message: "New submission created",
