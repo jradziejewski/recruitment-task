@@ -53,6 +53,9 @@ const SubmissionSchema = Yup.object().shape({
 
 const SubmissionForm = () => {
   const [countryCode, setCountryCode] = useState<string>("US");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [responseErrorMsg, setResponseErrorMsg] = useState<string>("");
+
   const initialValues: FormValues = {
     firstName: "",
     lastName: "",
@@ -74,7 +77,9 @@ const SubmissionForm = () => {
       onSubmit={async (values) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { policyAgreement: _, ...requestBody } = values;
-        fetch("http://localhost:8080/api/submissions", {
+        setResponseErrorMsg("");
+        setIsLoading(true);
+        const response = await fetch("http://localhost:8080/api/submissions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -84,6 +89,13 @@ const SubmissionForm = () => {
             phoneNumber: `${countryCode} ${values.phoneNumber}`,
           }),
         });
+
+        setIsLoading(false);
+        if (!response.ok) {
+          setResponseErrorMsg("An error occurred. Please try again later.");
+        } else {
+          window.location.href = "success";
+        }
       }}
       validationSchema={SubmissionSchema}
     >
@@ -184,8 +196,11 @@ const SubmissionForm = () => {
             type="submit"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Let's talk
+            {isLoading ? "Loading..." : "Let's talk!"}
           </button>
+          <div className="h-1">
+            <span className="text-red-500 text-sm">{responseErrorMsg}</span>
+          </div>
         </div>
       </Form>
     </Formik>
