@@ -31,19 +31,19 @@ const plugin: FastifyPluginAsync<never> = async (fastify) => {
   });
   fastify.decorate("mail", {
     async send<T extends keyof Templates>(template: T, data: Templates[T]) {
-      if (template === "submission-confirmation") {
-        const { id, firstName, recipientEmail } =
-          data as Templates["submission-confirmation"];
-        await transporter.sendMail({
-          from: "no-reply@example.com",
-          to: recipientEmail,
-          subject: "Submission Confirmation",
-          text: `Hello ${firstName}!\n\n Your submission has been received.\n\nSubmission ID: ${id}`,
-        });
-        fastify.log.info(`Email for submission ${id} sent`);
-      } else {
+      if (template !== "submission-confirmation") {
         throw new Error(`Template unknown: ${template}`);
       }
+
+      const { id, firstName, recipientEmail } =
+        data as Templates["submission-confirmation"];
+      await transporter.sendMail({
+        from: "no-reply@example.com",
+        to: recipientEmail,
+        subject: "Submission Confirmation",
+        text: `Hello ${firstName}!\n\n Your submission has been received.\n\nSubmission ID: ${id}`,
+      });
+      fastify.log.info(`Email for submission ${id} sent`);
     },
   });
 };
