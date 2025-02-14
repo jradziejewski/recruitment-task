@@ -1,5 +1,6 @@
 import fastify from "fastify";
 import autoload from "@fastify/autoload";
+import cors from "@fastify/cors";
 import path from "node:path";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
@@ -7,6 +8,12 @@ export function createApp() {
   const app = fastify({
     logger: { transport: { target: "pino-pretty" } },
   }).withTypeProvider<TypeBoxTypeProvider>();
+
+  // Cors
+  app.register(cors, {
+    origin: "http://localhost:4321",
+    credentials: true,
+  });
 
   // Plugins
   app.register(autoload, {
