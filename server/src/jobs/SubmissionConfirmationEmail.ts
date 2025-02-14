@@ -9,7 +9,7 @@ export const submissionConfirmationEmailJob = defineJob(
     firstName: Type.String(),
     recipientEmail: Type.String(),
   }),
-  async ({ id, firstName, recipientEmail }, fastify) => {
+  async ({ id, recipientEmail, firstName }, fastify) => {
     await fastify.mail.send("submission-confirmation", {
       id,
       recipientEmail,

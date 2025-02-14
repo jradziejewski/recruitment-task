@@ -111,7 +111,7 @@ describe("POST `/api/submissions` route", () => {
 
   test("should handle job scheduling failure", async () => {
     vi.spyOn(app.queue, "schedule").mockRejectedValue(
-      new Error("Failed to schedule email job"),
+      new Error("Server error description"),
     );
 
     const response = await app.inject({
@@ -121,9 +121,6 @@ describe("POST `/api/submissions` route", () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.json()).toHaveProperty(
-      "message",
-      "Failed to schedule email job",
-    );
+    expect(response.json()).toHaveProperty("message", "Internal Server Error");
   });
 });
