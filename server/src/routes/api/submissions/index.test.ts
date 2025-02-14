@@ -1,12 +1,19 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
 import { createApp } from "../../../app";
-import { FastifyInstance } from "fastify";
 import { Submission } from "../../../models/Submission";
 import { EntityManager } from "@mikro-orm/postgresql";
 import { submissionConfirmationEmailJob } from "../../../jobs/SubmissionConfirmationEmail";
 
 describe("POST `/api/submissions` route", () => {
-  let app: FastifyInstance | undefined;
+  const app = createApp();
   let em: EntityManager;
   const payload = {
     firstName: "john",
@@ -18,7 +25,6 @@ describe("POST `/api/submissions` route", () => {
   };
 
   beforeEach(async () => {
-    app = createApp();
     await app.ready();
 
     em = app.orm.em.fork();
@@ -28,14 +34,13 @@ describe("POST `/api/submissions` route", () => {
     await em.nativeDelete(Submission, {
       email: payload.email,
     });
-    await app?.close();
   });
 
-  test("POST `/api/submissions` success response with correct data", async () => {
-    if (!app) {
-      throw new Error("App is not initialized");
-    }
+  afterAll(async () => {
+    await app.close();
+  });
 
+  test("should return success response with correct data", async () => {
     const response = await app.inject({
       method: "POST",
       url: "/api/submissions",
@@ -45,11 +50,7 @@ describe("POST `/api/submissions` route", () => {
     expect(response?.statusCode).toBe(201);
   });
 
-  test("POST `/api/submissions` error response with bad data", async () => {
-    if (!app) {
-      throw new Error("App is not initialized");
-    }
-
+  test("should return error response with bad data", async () => {
     const response = await app.inject({
       method: "POST",
       url: "/api/submissions",
@@ -62,11 +63,7 @@ describe("POST `/api/submissions` route", () => {
     expect(response.json().message).toContain("must have required property");
   });
 
-  test("POST `/api/submissions` saves to database", async () => {
-    if (!app) {
-      throw new Error("App is not initialized");
-    }
-
+  test("should save to database", async () => {
     const response = await app.inject({
       method: "POST",
       url: "/api/submissions",
@@ -88,11 +85,7 @@ describe("POST `/api/submissions` route", () => {
     expect(submission?.message).toBe(payload.message);
   });
 
-  test("POST `/api/submissions` schedules sending email confirmation job", async () => {
-    if (!app) {
-      throw new Error("App is not initialized");
-    }
-
+  test("should schedule sending email confirmation job", async () => {
     const queueSpy = vi
       .spyOn(app.queue, "schedule")
       .mockResolvedValue(undefined);
@@ -116,11 +109,7 @@ describe("POST `/api/submissions` route", () => {
     });
   });
 
-  test("POST `/api/submissions` handles job scheduling failure", async () => {
-    if (!app) {
-      throw new Error("App is not initialized");
-    }
-
+  test("should handle job scheduling failure", async () => {
     vi.spyOn(app.queue, "schedule").mockRejectedValue(
       new Error("Failed to schedule email job"),
     );
