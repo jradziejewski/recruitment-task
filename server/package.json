@@ -25,6 +25,7 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@fastify/cors": "^10.0.2",
     "@mikro-orm/cli": "^6.4.1",
     "@types/node": "^22.10.2",
     "@types/nodemailer": "^6.4.17",

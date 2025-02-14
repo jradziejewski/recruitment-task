@@ -1,5 +1,4 @@
 ---
-import SubmissionForm from "../components/SubmissionForm.tsx";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -15,16 +14,21 @@ import Layout from "../layouts/Layout.astro";
       >
       </div>
     </div>
-    <div class="mx-auto max-w-2xl text-center">
-      <h2
-        class="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl"
+    <div class="mx-auto my-[10%] max-w-2xl text-center">
+      <h1
+        class="class=
+        text-balance
+        text-4xl
+        font-semibold
+        tracking-tight
+        text-gray-900
+        sm:text-5xl"
       >
-        Submission form
-      </h2>
-      <p class="mt-2 text-lg/8 text-gray-600">
-        Aute magna irure deserunt veniam aliqua magna enim voluptate.
+        Thank you for your submission!
+      </h1>
+      <p class="mt-8 text-xl text-gray-600">
+        We’ve received it and will be in touch soon.
       </p>
     </div>
-    <SubmissionForm client:load />
   </div>
 </Layout>
